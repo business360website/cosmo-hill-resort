@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+body { @apply font-sans bg-paper text-ink antialiased; overflow-x: hidden; }
+h1, h2, h3, h4 { @apply font-display; }
+:focus-visible { outline: 2px solid #FFE0B2; outline-offset: 3px; }
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold tracking-wide transition-all duration-300 active:scale-[.97]; }
+  .btn-solid { @apply bg-cream text-ink hover:bg-paper hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,.5)] hover:-translate-y-0.5; }
+  .btn-dark { @apply bg-ink text-cream hover:bg-forest hover:-translate-y-0.5; }
+  .btn-ghost { @apply border border-paper/60 hover:bg-white/15 hover:-translate-y-0.5; }
+  .section { @apply relative px-5 py-20 sm:px-8 sm:py-28; }
+  .wrap { @apply mx-auto w-full max-w-7xl; }
+  .h2 { @apply text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* Navbar rotating words (mobile): 3 words x 2s = 6s loop */
+@keyframes navWord {
+  0%   { opacity: 0; transform: translateY(4px); }
+  8%   { opacity: 1; transform: translateY(0); }
+  25%  { opacity: 1; transform: translateY(0); }
+  33%  { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 0; transform: translateY(-4px); }
+}
+.nav-word { animation: navWord 6s ease-in-out infinite; }

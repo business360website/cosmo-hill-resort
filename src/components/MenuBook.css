@@ -1,0 +1,91 @@
+/* 3D menu book. Sizes come from JS (px); the cover scales with container units. */
+.mb-root { position: relative; width: 100%; outline: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+.mb-root:focus-visible { outline: 2px solid #FFE0B2; outline-offset: 6px; border-radius: 12px; }
+.mb-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.mb-stage { position: relative; touch-action: pan-y; }
+.mb-stage.single { clip-path: inset(-60px 0 -60px 0); }
+.mb-scene { position: absolute; inset: 0; perspective-origin: 50% 50%; }
+.mb-book { position: absolute; top: 0; width: 0; height: 100%; transform-style: preserve-3d; will-change: transform; }
+
+/* hard-cover boards behind the paper */
+.mb-plate {
+  position: absolute; border-radius: 5px; transform: translateZ(-1px);
+  background: linear-gradient(180deg, #34231b, #1d110b);
+  box-shadow: 0 46px 70px -34px rgba(30, 14, 4, .75), 0 10px 22px -8px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 220, 160, .14);
+}
+.mb-stack { position: absolute; top: 0; transform: translateZ(-.5px); background: transparent; pointer-events: none; }
+
+.mb-leaf { position: absolute; left: 0; top: 0; transform-style: preserve-3d; transform-origin: 0 50%; will-change: transform; }
+.mb-strip { position: absolute; top: 0; height: 100%; transform-style: preserve-3d; transform-origin: 0 50%; }
+.mb-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+.mb-face.back { transform: rotateY(180deg); }
+.mb-face.blank { background-color: #efe9dd; }
+.mb-face.blank::after, .mb-face.rigid.back::before { content: ''; position: absolute; inset: 0; opacity: .35; mix-blend-mode: multiply; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .4 0 0 0 0 .3 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.mb-face.rigid.back::before { display: none; }
+.mb-face.rigid.back.blank::before { display: block; }
+.mb-shade { position: absolute; inset: 0; background: #1b0f07; opacity: 0; pointer-events: none; }
+.mb-gut { position: absolute; inset: 0; pointer-events: none; }
+
+/* shadow a turning page throws on the pages beneath */
+.mb-cast { position: absolute; top: 0; left: 0; width: 0; opacity: 0; pointer-events: none; }
+
+/* click targets (outside the 3D scene so they never move) */
+.mb-hot { position: absolute; inset: 0; }
+.mb-hotspot { position: absolute; top: -6px; height: calc(100% + 12px); padding: 0; border: 0; background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none; }
+.mb-hotspot:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: -6px; }
+.mb-hotspot:disabled { cursor: default; }
+
+/* controls */
+.mb-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem; margin-top: .5rem; }
+.mb-status { min-width: 9.5rem; text-align: center; font-weight: 600; font-size: .95rem; letter-spacing: .02em; }
+.mb-btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; height: 2.6rem; min-width: 2.6rem; padding: 0 .9rem; border-radius: 999px;
+  border: 1px solid rgba(255, 224, 178, .55); background: rgba(255, 248, 236, .08); color: #FFF8EC; font-size: .88rem; font-weight: 600; cursor: pointer; transition: background .25s, color .25s, opacity .25s, transform .25s; }
+.mb-btn:hover:not(:disabled) { background: #FFE0B2; color: #2B1D18; }
+.mb-btn:active:not(:disabled) { transform: scale(.96); }
+.mb-btn:disabled { opacity: .35; cursor: default; }
+.mb-close { margin-left: .4rem; }
+
+/* ---------------- cover ---------------- */
+.mb-cover { position: absolute; inset: 0; container-type: size; overflow: hidden; color: #f3dca3; font-family: 'Cormorant Garamond', Georgia, serif; border-radius: 0 3px 3px 0;
+  --g1: #f8e4ae; --g2: #d2a24a; --g3: #8d6120; }
+.mb-cover-leather { position: absolute; inset: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 30% 20%, #5a4033 0%, #3b281f 45%, #24150f 100%);
+  background-blend-mode: multiply, normal; }
+.mb-cover-frame { position: absolute; inset: 5.2cqw 5.2cqw 5.2cqw 7.6cqw; border: .45cqw solid var(--g2); border-radius: .6cqw; box-shadow: inset 0 0 0 1.1cqw transparent, inset 0 0 0 1.4cqw rgba(210, 162, 74, .0), 0 0 0 .3cqw rgba(0, 0, 0, .35); }
+.mb-cover-frame::before { content: ''; position: absolute; inset: 1.6cqw; border: .2cqw solid rgba(210, 162, 74, .7); }
+.mb-corner { position: absolute; width: 9cqw; height: 9cqw; border: .45cqw solid var(--g1); }
+.mb-corner.tl { top: 1.2cqw; left: 1.2cqw; border-right: 0; border-bottom: 0; }
+.mb-corner.tr { top: 1.2cqw; right: 1.2cqw; border-left: 0; border-bottom: 0; }
+.mb-corner.bl { bottom: 1.2cqw; left: 1.2cqw; border-right: 0; border-top: 0; }
+.mb-corner.br { bottom: 1.2cqw; right: 1.2cqw; border-left: 0; border-top: 0; }
+.mb-cover-inner { position: absolute; inset: 6cqw 4cqw 4cqw; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.mb-cover-logo { width: 20cqw; height: 20cqw; border-radius: 50%; object-fit: cover; background: #FFF8EC; border: .7cqw solid var(--g2); box-shadow: 0 0 0 .5cqw rgba(0, 0, 0, .35), 0 1.2cqw 2.4cqw rgba(0, 0, 0, .5); }
+.mb-cover-eyebrow { margin: 5.5cqw 0 0; font-size: 4.3cqw; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: var(--g1); }
+.mb-cover-title { margin: 3cqw 0 0; font-size: 22cqw; line-height: 1; font-weight: 600; letter-spacing: .08em; padding-left: .08em;
+  background: linear-gradient(180deg, var(--g1) 10%, var(--g2) 52%, var(--g3) 96%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 .4cqw .3cqw rgba(0, 0, 0, .55)); }
+.mb-cover-rule { display: flex; align-items: center; gap: 2cqw; margin-top: 3.4cqw; width: 52cqw; }
+.mb-cover-rule i { flex: 1; height: .3cqw; background: linear-gradient(90deg, transparent, var(--g2)); }
+.mb-cover-rule i:last-child { background: linear-gradient(270deg, transparent, var(--g2)); }
+.mb-cover-rule b { width: 1.8cqw; height: 1.8cqw; background: var(--g1); transform: rotate(45deg); }
+.mb-cover-tag { margin: 3.4cqw 0 0; font-size: 4.6cqw; font-style: italic; font-weight: 500; letter-spacing: .06em; color: #ecd199; }
+.mb-cover-ridge { margin-top: auto; width: 62cqw; fill: none; stroke: var(--g2); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; opacity: .9; }
+.mb-cover-ridge circle { fill: var(--g1); stroke: none; opacity: .85; }
+.mb-cover-hint { margin: 4cqw 0 0; font-family: Figtree, system-ui, sans-serif; font-size: 3.3cqw; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--g1); }
+.mb-cover-hint span { display: inline-block; animation: mb-pulse 2.4s ease-in-out infinite; }
+.mb-cover-hint span::after { content: '  ›'; }
+.mb-cover-hinge { position: absolute; top: 0; bottom: 0; left: 0; width: 6.4cqw; pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .55) 0, rgba(0, 0, 0, .2) 28%, rgba(255, 220, 160, .12) 40%, rgba(0, 0, 0, .28) 52%, rgba(0, 0, 0, 0) 100%); }
+.mb-cover-shine { position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 236, 190, .13) 44%, rgba(255, 255, 255, 0) 58%); background-size: 260% 100%; animation: mb-sheen 6s ease-in-out infinite; }
+
+@keyframes mb-pulse { 0%, 100% { opacity: .55; transform: translateX(0); } 50% { opacity: 1; transform: translateX(.8cqw); } }
+@keyframes mb-sheen { 0% { background-position: 130% 0; } 55%, 100% { background-position: -40% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .mb-cover-hint span, .mb-cover-shine { animation: none; }
+}
